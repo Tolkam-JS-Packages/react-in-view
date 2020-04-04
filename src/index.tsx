@@ -38,6 +38,16 @@ export default class InView extends PureComponent<IProps> {
     protected lastScrollDirX: number;
 
     /**
+     * @var {number}
+     */
+    protected prevScrollDirY: number;
+
+    /**
+     * @var {number}
+     */
+    protected prevScrollDirX: number;
+
+    /**
      * @inheritDoc
      */
     public componentDidMount() {
@@ -56,7 +66,7 @@ export default class InView extends PureComponent<IProps> {
      */
     public render() {
         const that = this;
-        const { children, track, ref } = that.props;
+        const { children, track } = that.props;
         const childrenProps: any = {};
 
         if (!track) {
@@ -112,16 +122,6 @@ export default class InView extends PureComponent<IProps> {
     }
 
     /**
-     * @var {number}
-     */
-    protected prevScrollDirY: number;
-
-    /**
-     * @var {number}
-     */
-    protected prevScrollDirX: number;
-
-    /**
      * Trackes element visibility
      *
      * @param {IVisibility} v
@@ -156,10 +156,10 @@ export default class InView extends PureComponent<IProps> {
 
             // remember last scroll direction when current update is from non-scroll event (resize, for ex.)
             if (props.preserveDirection) {
-                if(scrollDirY === DIR_NONE) {
+                if (scrollDirY === DIR_NONE) {
                     scrollDirY = that.prevScrollDirY;
                 }
-                if(scrollDirX === DIR_NONE) {
+                if (scrollDirX === DIR_NONE) {
                     scrollDirX = that.prevScrollDirX;
                 }
             }
@@ -232,7 +232,8 @@ export interface IProps extends React.HTMLProps<InView> {
 
 export type TStopFn = () => void;
 
-export interface IVisibility extends IVisibility {}
-export type IOffset = IOffset;
-export type TOffset = TOffset;
-export { ISubject, IContext };
+// export interface IVisibility extends IVisibility {}
+// export type IOffset = IOffset;
+// export type TOffset = TOffset;
+// export { ISubject, IContext };
+export { ISubject, IContext, IVisibility, IOffset, TOffset };
