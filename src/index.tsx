@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { PureComponent, cloneElement, Children } from 'react';
+import { closestScrollingParent } from '@tolkam/lib-utils-ui'
 import InViewTracker, {
     IOptions,
     IOffset,
@@ -58,7 +59,9 @@ export default class InView extends PureComponent<IProps> {
             that.element = track;
         }
 
-        that.start();
+        const tracker = that.start();
+
+        setTimeout(tracker.recalculate, 0);
     }
 
     /**
@@ -79,7 +82,7 @@ export default class InView extends PureComponent<IProps> {
     /**
      * Starts element tracking
      *
-     * @returns {void}
+     * @returns {InViewTracker}
      */
     protected start() {
         const that = this;
@@ -87,9 +90,8 @@ export default class InView extends PureComponent<IProps> {
 
         const options: IOptions = {};
 
-        if (props.parent) {
-            options.context = props.parent;
-        }
+        options.context = props.parent
+            || props.parentAutodetect ? closestScrollingParent(that.element) : undefined;
 
         if (props.offsetPercentageMode) {
             options.offsetPercentageMode = props.offsetPercentageMode;
@@ -103,7 +105,7 @@ export default class InView extends PureComponent<IProps> {
             options.offset = props.offset;
         }
 
-        that.tracker = new InViewTracker(that.element, that.track, options);
+        return that.tracker = new InViewTracker(that.element, that.track, options);
     }
 
     /**
@@ -122,7 +124,7 @@ export default class InView extends PureComponent<IProps> {
     }
 
     /**
-     * Trackes element visibility
+     * Tracks element visibility
      *
      * @param {IVisibility} v
      */
@@ -203,6 +205,9 @@ export default class InView extends PureComponent<IProps> {
 export interface IProps extends React.HTMLProps<InView> {
     // scrolling parent element
     parent?: HTMLElement;
+
+    // whether to autodetect closest scrollable parent
+    parentAutodetect?: boolean;
 
     // external element to track
     track?: HTMLElement;
