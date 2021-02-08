@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { PureComponent, cloneElement, Children } from 'react';
-import { closestScrollingParent } from '@tolkam/lib-utils-ui'
+import { PureComponent, cloneElement, Children, ReactElement } from 'react';
+import { classNames, closestScrollingParent } from '@tolkam/lib-utils-ui'
 import InViewTracker, {
     IOptions,
     IOffset,
@@ -59,9 +59,17 @@ export default class InView extends PureComponent<IProps> {
             that.element = track;
         }
 
-        const tracker = that.start();
+        that.start();
+        // that.recalculate();
 
-        setTimeout(tracker.recalculate, 0);
+        setTimeout(that.recalculate, 0);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public componentWillUnmount() {
+        this.stop();
     }
 
     /**
@@ -69,14 +77,31 @@ export default class InView extends PureComponent<IProps> {
      */
     public render() {
         const that = this;
-        const { children, track } = that.props;
-        const childrenProps: any = {};
+        const {props} = that;
+        let children = props.children;
 
-        if (!track) {
+        if(!children) {
+            return null;
+        }
+
+        // merge class names
+        const childrenProps: any = {
+            className: classNames(children.props.className, props.className),
+        };
+
+        if (!props.track) {
             childrenProps.ref = (r: HTMLElement) => that.element = r;
         }
 
-        return cloneElement(Children.only(children), childrenProps);
+        return cloneElement(Children.only(props.children), childrenProps);
+    }
+
+    /**
+     * Recalculates visibility
+     */
+    public recalculate =() => {
+        const tracker = this.tracker;
+        tracker && tracker.recalculate();
     }
 
     /**
@@ -84,14 +109,19 @@ export default class InView extends PureComponent<IProps> {
      *
      * @returns {InViewTracker}
      */
-    protected start() {
+    public start = () => {
         const that = this;
-        const props = that.props;
+        const {props, element} = that;
+
+        // element is not ready yet
+        if(!element) {
+            return;
+        }
 
         const options: IOptions = {};
 
         options.context = props.parent
-            || props.parentAutodetect ? closestScrollingParent(that.element) : undefined;
+            || props.parentAutodetect ? closestScrollingParent(element) : undefined;
 
         if (props.offsetPercentageMode) {
             options.offsetPercentageMode = props.offsetPercentageMode;
@@ -105,7 +135,7 @@ export default class InView extends PureComponent<IProps> {
             options.offset = props.offset;
         }
 
-        return that.tracker = new InViewTracker(that.element, that.track, options);
+        that.tracker = new InViewTracker(that.element, that.track, options);
     }
 
     /**
@@ -113,7 +143,7 @@ export default class InView extends PureComponent<IProps> {
      *
      * @returns {void}
      */
-    protected stop() {
+    public stop() {
         const that = this;
         const { tracker } = that;
 
@@ -131,7 +161,7 @@ export default class InView extends PureComponent<IProps> {
     protected track = (v: IVisibility) => {
         const that = this;
         const { tracker, element, props } = that;
-        const onChanges = props.onChanges;
+        const {onChanges, classesTarget} = props;
         const classNameRoot = (props.classNamesPrefix || 'inview') + '-';
         let classesHash = '';
 
@@ -139,7 +169,7 @@ export default class InView extends PureComponent<IProps> {
             return;
         }
 
-        const classList = element.classList;
+        const classList = (classesTarget ?? element).classList;
         const { subject, context } = tracker;
         const { DIR_NONE } = context;
         let scrollDirY = context.scrollDirY;
@@ -147,6 +177,7 @@ export default class InView extends PureComponent<IProps> {
 
         // visibility classes
         const classNames = {
+            // [props.className || '']: true,
             [classNameRoot + 'visible']: v.visible,
             [classNameRoot + 'TL']: v.topLeft,
             [classNameRoot + 'TR']: v.topRight,
@@ -180,7 +211,7 @@ export default class InView extends PureComponent<IProps> {
         }
 
         for (const name in classNames) {
-            if (classNames[name] === true) {
+            if (classNames[name] === true && v.rendered) {
                 classesHash += ' ' + name;
             }
         }
@@ -203,6 +234,10 @@ export default class InView extends PureComponent<IProps> {
 }
 
 export interface IProps extends React.HTMLProps<InView> {
+
+    // single child only
+    children: ReactElement<any> | null,
+
     // scrolling parent element
     parent?: HTMLElement;
 
@@ -211,6 +246,15 @@ export interface IProps extends React.HTMLProps<InView> {
 
     // external element to track
     track?: HTMLElement;
+
+    // target element to set classes onto (e.g. some parent)
+    classesTarget?: HTMLElement;
+
+    // do not add state classes
+    noClasses?: boolean;
+
+    // state class names prefix
+    classNamesPrefix?: string;
 
     // extra window event names to track
     windowEvents?: string[];
@@ -227,12 +271,6 @@ export interface IProps extends React.HTMLProps<InView> {
 
     // visibility change callback
     onChanges?: (v: IVisibility, stop: TStopFn, subject: ISubject, context: IContext) => void;
-
-    // do not add state classes
-    noClasses?: boolean;
-
-    // state class names prefix
-    classNamesPrefix?: string;
 }
 
 export type TStopFn = () => void;
