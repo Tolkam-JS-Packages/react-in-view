@@ -161,8 +161,8 @@ export default class InView extends PureComponent<IProps> {
     protected track = (v: IVisibility) => {
         const that = this;
         const { tracker, element, props } = that;
-        const {onChanges, classesTarget} = props;
-        const classNameRoot = (props.classNamesPrefix || 'inview') + '-';
+        const {onChanges, classesTarget, classNamesPrefix} = props;
+        const classNameRoot = (classNamesPrefix || '') + '-';
         let classesHash = '';
 
         if (!tracker) {
@@ -236,7 +236,7 @@ export default class InView extends PureComponent<IProps> {
 export interface IProps extends React.HTMLProps<InView> {
 
     // single child only
-    children: ReactElement<any> | null,
+    children: ReactElement<any>,
 
     // scrolling parent element
     parent?: HTMLElement;
