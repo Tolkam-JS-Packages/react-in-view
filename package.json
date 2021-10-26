@@ -1,17 +1,19 @@
 {
     "name": "@tolkam/react-in-view",
-    "version": "1.0.0",
     "description": "Adds css classes depending on element visibility within its parent",
-    "main": "src/index.tsx",
+    "browser": "src/index.tsx",
+    "types": "src/index.tsx",
     "license": "UNLICENSED",
-    "private": true,
     "dependencies": {
-        "react": "^16.5",
-        "@tolkam/lib-utils-ui": "file:D:/dev-packages/js/tolkam/lib-utils-ui",
-        "@tolkam/lib-in-view": "file:D:/dev-packages/js/tolkam/lib-in-view"
+        "@tolkam/lib-in-view": "^1.0.0",
+        "@tolkam/lib-utils-ui": "^0.1.0",
+        "react": "^16.14.0"
+    },
+    "peerDependencies": {
+        "react": "^16.14.0"
     },
     "devDependencies": {
-        "tslib": "^1.9.3",
-        "@types/react": "^16"
+        "@types/react": "^16",
+        "tslib": "^2.3.1"
     }
 }

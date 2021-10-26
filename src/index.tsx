@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { PureComponent, cloneElement, Children, ReactElement } from 'react';
+import { PureComponent, cloneElement, Children, ReactElement, HTMLProps } from 'react';
 import { classNames, closestScrollingParent } from '@tolkam/lib-utils-ui'
 import InViewTracker, {
     IOptions,
@@ -233,15 +232,15 @@ export default class InView extends PureComponent<IProps> {
     }
 }
 
-export interface IProps extends React.HTMLProps<InView> {
+export interface IProps extends HTMLProps<InView> {
 
     // single child only
-    children: ReactElement<any>,
+    children: ReactElement,
 
     // scrolling parent element
     parent?: HTMLElement;
 
-    // whether to autodetect closest scrollable parent
+    // whether to autodetect the closest scrollable parent
     parentAutodetect?: boolean;
 
     // external element to track
@@ -275,8 +274,4 @@ export interface IProps extends React.HTMLProps<InView> {
 
 export type TStopFn = () => void;
 
-// export interface IVisibility extends IVisibility {}
-// export type IOffset = IOffset;
-// export type TOffset = TOffset;
-// export { ISubject, IContext };
 export { ISubject, IContext, IVisibility, IOffset, TOffset };
