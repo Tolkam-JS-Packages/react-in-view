@@ -6,14 +6,13 @@
     "license": "UNLICENSED",
     "dependencies": {
         "@tolkam/lib-in-view": "^1.0.0",
-        "@tolkam/lib-utils-ui": "^0.1.0",
-        "react": "^16.14.0"
+        "@tolkam/lib-utils-ui": "^0.2.0"
     },
     "peerDependencies": {
-        "react": "^16.14.0"
+        "react": "^18"
     },
     "devDependencies": {
-        "@types/react": "^16",
+        "@types/react": "^18",
         "tslib": "^2.3.1"
     }
 }
