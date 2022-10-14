@@ -1,6 +1,7 @@
 {
     "name": "@tolkam/react-in-view",
     "description": "Adds css classes depending on element visibility within its parent",
+    "version": "0.0.0",
     "browser": "src/index.tsx",
     "types": "src/index.tsx",
     "license": "UNLICENSED",
