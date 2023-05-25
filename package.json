@@ -6,8 +6,8 @@
     "types": "src/index.tsx",
     "license": "UNLICENSED",
     "dependencies": {
-        "@tolkam/lib-in-view": "^1.0.0",
-        "@tolkam/lib-utils-ui": "^0.2.0"
+        "@tolkam/lib-in-view": "^1.0.1",
+        "@tolkam/lib-utils-ui": "^0.2.2"
     },
     "peerDependencies": {
         "react": "^18"
